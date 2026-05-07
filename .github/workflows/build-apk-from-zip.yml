@@ -21,9 +21,16 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Gradle einrichten
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10.2
+
       - name: ZIP entpacken
         run: |
+          rm -rf extracted
           mkdir extracted
+
           ZIP_FILE=$(find . -maxdepth 1 -name "*.zip" | head -n 1)
 
           if [ -z "$ZIP_FILE" ]; then
@@ -34,20 +41,33 @@ jobs:
           echo "Entpacke: $ZIP_FILE"
           unzip -q "$ZIP_FILE" -d extracted
 
+          echo "Entpackte Dateien:"
+          find extracted -maxdepth 5 -type f | head -n 200
+
       - name: Android-Projekt finden
         run: |
-          PROJECT_DIR=$(find extracted -name gradlew -type f -exec dirname {} \; | head -n 1)
+          PROJECT_DIR=$(find extracted \( -name settings.gradle -o -name settings.gradle.kts \) -type f -exec dirname {} \; | head -n 1)
 
           if [ -z "$PROJECT_DIR" ]; then
-            echo "Kein Android-Projekt gefunden. gradlew fehlt."
+            echo "Kein Android-Projekt gefunden. settings.gradle oder settings.gradle.kts fehlt."
             exit 1
           fi
 
           echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
           echo "Android-Projekt gefunden in: $PROJECT_DIR"
 
-      - name: Gradle ausführbar machen
-        run: chmod +x "$PROJECT_DIR/gradlew"
+      - name: Gradle Wrapper erstellen falls er fehlt
+        run: |
+          cd "$PROJECT_DIR"
+
+          if [ ! -f "./gradlew" ]; then
+            echo "gradlew fehlt. Erstelle Gradle Wrapper..."
+            gradle wrapper
+          else
+            echo "gradlew ist vorhanden."
+          fi
+
+          chmod +x ./gradlew
 
       - name: Debug APK bauen
         run: |

@@ -1,0 +1,61 @@
+name: Build APK from ZIP
+
+on:
+  push:
+    paths:
+      - "*.zip"
+      - ".github/workflows/build-apk-from-zip.yml"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Repository auschecken
+        uses: actions/checkout@v4
+
+      - name: Java einrichten
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: ZIP entpacken
+        run: |
+          mkdir extracted
+          ZIP_FILE=$(find . -maxdepth 1 -name "*.zip" | head -n 1)
+
+          if [ -z "$ZIP_FILE" ]; then
+            echo "Keine ZIP-Datei im Repo gefunden."
+            exit 1
+          fi
+
+          echo "Entpacke: $ZIP_FILE"
+          unzip -q "$ZIP_FILE" -d extracted
+
+      - name: Android-Projekt finden
+        run: |
+          PROJECT_DIR=$(find extracted -name gradlew -type f -exec dirname {} \; | head -n 1)
+
+          if [ -z "$PROJECT_DIR" ]; then
+            echo "Kein Android-Projekt gefunden. gradlew fehlt."
+            exit 1
+          fi
+
+          echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
+          echo "Android-Projekt gefunden in: $PROJECT_DIR"
+
+      - name: Gradle ausführbar machen
+        run: chmod +x "$PROJECT_DIR/gradlew"
+
+      - name: Debug APK bauen
+        run: |
+          cd "$PROJECT_DIR"
+          ./gradlew assembleDebug
+
+      - name: APK als Download bereitstellen
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: extracted/**/build/outputs/apk/debug/*.apk

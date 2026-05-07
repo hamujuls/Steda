@@ -21,11 +21,6 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Gradle einrichten
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          gradle-version: 8.10.2
-
       - name: ZIP entpacken
         run: |
           rm -rf extracted
@@ -42,7 +37,7 @@ jobs:
           unzip -q "$ZIP_FILE" -d extracted
 
           echo "Entpackte Dateien:"
-          find extracted -maxdepth 5 -type f | head -n 200
+          find extracted -maxdepth 6 -type f | head -n 200
 
       - name: Android-Projekt finden
         run: |
@@ -56,23 +51,15 @@ jobs:
           echo "PROJECT_DIR=$PROJECT_DIR" >> $GITHUB_ENV
           echo "Android-Projekt gefunden in: $PROJECT_DIR"
 
-      - name: Gradle Wrapper erstellen falls er fehlt
-        run: |
-          cd "$PROJECT_DIR"
-
-          if [ ! -f "./gradlew" ]; then
-            echo "gradlew fehlt. Erstelle Gradle Wrapper..."
-            gradle wrapper
-          else
-            echo "gradlew ist vorhanden."
-          fi
-
-          chmod +x ./gradlew
+      - name: Gradle einrichten
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.7
 
       - name: Debug APK bauen
         run: |
           cd "$PROJECT_DIR"
-          ./gradlew assembleDebug
+          gradle assembleDebug --stacktrace
 
       - name: APK als Download bereitstellen
         uses: actions/upload-artifact@v4

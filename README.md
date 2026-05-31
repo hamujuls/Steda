@@ -2,8 +2,6 @@
 
 A native Android habit-tracker app. The app is deliberately built **without WebView and without external UI libraries** — the entire interface is constructed programmatically with native Android Views, so the official Android build tools produce a clean APK.
 
-> 🇩🇪 Eine deutsche Version dieser Doku findest du in [`README_DE.md`](Steda_1.0/README_DE.md).
-
 ## Features
 
 - Guided setup on first launch: pick a start date and create up to 10 habits, each with a weekly goal (0–7 days).

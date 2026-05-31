@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+      Firebase-Konfiguration (Platzhalter).
+      Trage hier die Werte aus DEINER eigenen google-services.json ein.
+      Anleitung: siehe FIREBASE_SETUP_DE.md.
+      Diese Datei enthaelt bewusst KEINE echten Schluessel.
+    -->
+    <string name="firebase_project_id">YOUR_FIREBASE_PROJECT_ID</string>
+    <string name="firebase_application_id">YOUR_FIREBASE_APPLICATION_ID</string>
+    <string name="firebase_api_key">YOUR_FIREBASE_API_KEY</string>
+</resources>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- track ring -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M24,54 a30,30 0 1,0 60,0 a30,30 0 1,0 -60,0"
+        android:strokeAlpha="0.22"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5" />
+    <!-- progress arc (green) -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M54,24 a30,30 0 1,1 -21.2,8.8"
+        android:strokeColor="#4AC071"
+        android:strokeLineCap="round"
+        android:strokeWidth="5" />
+    <!-- white check -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M40,55 L50,65 L70,42"
+        android:strokeColor="#FFFFFF"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="8" />
+</vector>
